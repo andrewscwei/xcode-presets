@@ -4,7 +4,6 @@
 
 # Config.
 SRC="https://raw.githubusercontent.com/andrewscwei/xcode-presets/master"
-INSTALL_PATH="$HOME/foo"
 
 # Colors.
 COLOR_PREFIX="\x1b["
