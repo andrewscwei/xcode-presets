@@ -3,7 +3,8 @@
 { # This ensures the entire script is downloaded
 
 # Config.
-SRC="https://raw.githubusercontent.com/andrewscwei/xcode-presets/master/"
+SRC="https://raw.githubusercontent.com/andrewscwei/xcode-presets/master"
+INSTALL_PATH="$HOME/foo"
 
 # Colors.
 COLOR_PREFIX="\x1b["
@@ -27,55 +28,51 @@ function command_exists() {
 # Gets the default install path. This can be overridden when calling the
 # download script by passing the INSTALL_PATH variable.
 function install_dir() {
-  printf %s "${INSTALL_PATH:-"$HOME/Library/Developer/Xcode/UserData/"}"
+  printf %s "${INSTALL_PATH:-"$HOME/Library/Developer/Xcode/UserData"}"
 }
 
-# Download command (curl or wget).
-function download_command() {
-  if command_exists "curl"; then
-    curl --compressed -q "$@"
-  elif command_exists "wget"; then
-    # Emulate curl with wget
-    ARGS=$(echo "$*" | command sed -e 's/--progress-bar /--progress=bar /' \
-                                   -e 's/-L //' \
-                                   -e 's/--compressed //' \
-                                   -e 's/-I /--server-response /' \
-                                   -e 's/-s /-q /' \
-                                   -e 's/-o /-O /' \
-                                   -e 's/-C - /-c /')
-    eval wget $ARGS
-  fi
+# Download command (wget).
+function download() {
+  ARGS=$(echo "$*" | command sed -e 's/--progress-bar /--progress=bar /' \
+                                  -e 's/-L //' \
+                                  -e 's/--compressed //' \
+                                  -e 's/-I /--server-response /' \
+                                  -e 's/-s /-q /' \
+                                  -e 's/-o /-O /' \
+                                  -e 's/-C - /-c /')
+  eval wget $ARGS
 }
 
 # Installs presets.
-function install() {
+function install_themes() {
   local dest="$(install_dir)"
 
-  if [ ! -d "$dest" ]; then
-    echo >&2 "${COLOR_RED}Directory ${COLOR_CYAN}$dest${COLOR_RED} not found, are you sure you have Xcode installed?${COLOR_RESET}"
-    exit 1
-  fi
+  for file in ./FontAndColorThemes/*; do
+    local f=${file##*/}
+    local i="$SRC/FontAndColorThemes/$f"
+    local o="$(install_dir)/FontAndColorThemes/$f"
 
-  for filename in ./FontAndColorThemes/*; do
-    echo "FOOOOOOO $filename"
+    echo -e "Installing theme $i..."
+    download -s "$i" -o "$o" || {
+      echo -e "${COLOR_RED}Failed to download from ${COLOR_CYAN}$i${COLOR_RESET}"
+      return 1
+    }
   done
-
-  # Download presets.
-  # download_command -s "$SRC/FontAndColorThemes" -o "~/foo" || {
-  #   echo -e "${COLOR_RED}Failed to download from ${COLOR_CYAN}$SRC${COLOR_RESET}"
-  #   return 1
-  # }
 }
 
 # Main process.
 function main() {
-  # Download and install the script.
-  if command_exists download_command; then
-    install
-  else
-    echo >&2 "${COLOR_RED}You need ${COLOR_CYAN}curl${COLOR_RED} or ${COLOR_CYAN}wget${COLOR_RED} to run the install script"
+  if ! command_exists wget; then
+    echo -e "${COLOR_RED}You need ${COLOR_CYAN}wget${COLOR_RED} to run the install script"
     exit 1
   fi
+
+  if [ ! -d "$(install_dir)" ]; then
+    echo >&2 "${COLOR_RED}Directory ${COLOR_CYAN}$(install_dir)${COLOR_RED} not found, are you sure you have Xcode installed?${COLOR_RESET}"
+    exit 1
+  fi
+
+  install_themes
 
   echo -e "${COLOR_GREEN}Installation complete, restart Xcode for changes to take effect"
 }
