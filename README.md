@@ -4,16 +4,18 @@ Custom Xcode presets—simply run the install script and you're good to go.
 
 ## Usage
 
-Install via cURL:
+Install via Wget:
 
 ```sh
-curl -o- https://raw.githubusercontent.com/andrewscwei/xcode-presets/master/install.sh | bash
+$ wget -qO- https://raw.githubusercontent.com/andrewscwei/xcode-presets/master/install.sh | bash
 ```
 
-or Wget:
+Export current Xcode settings:
 
 ```sh
-wget -qO- https://raw.githubusercontent.com/andrewscwei/xcode-presets/master/install.sh | bash
+$ git clone https://github.com/andrewscwei/xcode-presets
+$ cd xcode-presets
+$ ./export.sh
 ```
 
 ## License
