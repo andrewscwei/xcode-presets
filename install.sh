@@ -4,7 +4,6 @@
 
 # Config.
 SRC="https://raw.githubusercontent.com/andrewscwei/xcode-presets/master"
-INSTALL_PATH="$HOME/foo"
 
 # Colors.
 COLOR_PREFIX="\x1b["
@@ -31,18 +30,6 @@ function install_dir() {
   printf %s "${INSTALL_PATH:-"$HOME/Library/Developer/Xcode/UserData"}"
 }
 
-# Download command (wget).
-function download() {
-  ARGS=$(echo "$*" | command sed -e 's/--progress-bar /--progress=bar /' \
-                                  -e 's/-L //' \
-                                  -e 's/--compressed //' \
-                                  -e 's/-I /--server-response /' \
-                                  -e 's/-s /-q /' \
-                                  -e 's/-o /-O /' \
-                                  -e 's/-C - /-c /')
-  eval wget $ARGS
-}
-
 # Installs presets.
 function install_themes() {
   local dest="$(install_dir)"
@@ -53,7 +40,24 @@ function install_themes() {
     local o="$(install_dir)/FontAndColorThemes/$f"
 
     echo -e "Installing theme $i..."
-    download -s "$i" -o "$o" || {
+    wget "$i" -O "$o" || {
+      echo -e "${COLOR_RED}Failed to download from ${COLOR_CYAN}$i${COLOR_RESET}"
+      return 1
+    }
+  done
+}
+
+# Installs presets.
+function install_key_bindings() {
+  local dest="$(install_dir)"
+
+  for file in ./KeyBindings/*; do
+    local f=${file##*/}
+    local i="$SRC/KeyBindings/$f"
+    local o="$(install_dir)/KeyBindings/$f"
+
+    echo -e "Installing key binding $i..."
+    wget "$i" -O "$o" || {
       echo -e "${COLOR_RED}Failed to download from ${COLOR_CYAN}$i${COLOR_RESET}"
       return 1
     }
@@ -73,6 +77,7 @@ function main() {
   fi
 
   install_themes
+  install_key_bindings
 
   echo -e "${COLOR_GREEN}Installation complete, restart Xcode for changes to take effect"
 }
