@@ -9,7 +9,7 @@ Custom Xcode presets—simply run the install script and you're good to go.
 Install via Wget:
 
 ```sh
-$ wget -qO- https://raw.githubusercontent.com/andrewscwei/xcode-presets/master/install.sh | bash
+$ curl -o- -s https://raw.githubusercontent.com/andrewscwei/xcode-presets/master/install.sh | bash
 ```
 
 Relaunch Xcode and go to **Preferences**:

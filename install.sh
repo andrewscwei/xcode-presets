@@ -46,7 +46,7 @@ function install_from_dir() {
     local o="$(install_dir)/$1/$f"
 
     echo -e "Installing $f..."
-    wget -q "$i" -O "$o" || {
+    curl --compressed -q -s "$i" -o "$o" || {
       echo -e "${COLOR_RED}Failed to download from ${COLOR_CYAN}$i${COLOR_RESET}"
       return 1
     }
@@ -55,8 +55,8 @@ function install_from_dir() {
 
 # Main process.
 function main() {
-  if ! command_exists wget; then
-    echo -e "${COLOR_RED}You need ${COLOR_CYAN}wget${COLOR_RED} to run the install script"
+  if ! command_exists curl; then
+    echo -e "${COLOR_RED}You need ${COLOR_CYAN}curl${COLOR_RED} to run the install script"
     exit 1
   fi
 
