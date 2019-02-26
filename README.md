@@ -24,7 +24,3 @@ $ git clone https://github.com/andrewscwei/xcode-presets
 $ cd xcode-presets
 $ ./export.sh
 ```
-
-## License
-
-This software is released under the [MIT License](http://opensource.org/licenses/MIT).
