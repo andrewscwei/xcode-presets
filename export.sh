@@ -9,7 +9,7 @@ function export_themes() {
     local f=${file##*/}
     local o="${CWD}/FontAndColorThemes/$f"
 
-    echo -e "Exporting theme ${COLOR_CYAN}$f${COLOR_RESET}..."
+    echo "Exporting theme ${COLOR_CYAN}$f${COLOR_RESET}..."
 
     cp -rf "$file" "$o"
   done
@@ -20,7 +20,7 @@ function export_key_bindings() {
     local f=${file##*/}
     local o="${CWD}/KeyBindings/$f"
 
-    echo -e "Exporting key binding ${COLOR_CYAN}$f${COLOR_RESET}..."
+    echo "Exporting key binding ${COLOR_CYAN}$f${COLOR_RESET}..."
 
     cp -rf "$file" "$o"
   done
